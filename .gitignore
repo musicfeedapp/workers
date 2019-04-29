@@ -1,0 +1,14 @@
+/_build
+/cover
+/deps
+erl_crash.dump
+*.ez
+dump.rdb
+log/
+.deliver/releases
+.python-version
+.envrc
+node_modules/
+Mnesia.nonode@nohost/
+*.iml
+.idea/

@@ -1,0 +1,55 @@
+version: "3"
+
+services:
+  elasticsearch:
+    image: elasticsearch:latest
+    ports: ["9200"]
+    networks:
+      - musicfeed-network
+
+  rabbitmq:
+    image: rabbitmq:3.4
+    ports: ["5672", "15672"]
+    networks:
+      - musicfeed-network
+
+  redis:
+    image: redis:alpine
+    ports: ["6379"]
+    networks:
+      - musicfeed-network
+
+  db:
+    image: postgres:9.4
+    volumes:
+      - "db-data:/var/lib/postgresql/data"
+    networks:
+      - musicfeed-network
+
+  workers:
+    build: ./
+    volumes:
+      - ./:/app
+    dns:
+      - "8.8.8.8"
+    networks:
+      - musicfeed-network
+    ports:
+      - "127.0.0.1:22:22"
+    tty: true
+    depends_on:
+      - db
+      - redis
+      - elasticsearch
+      - rabbitmq
+    links:
+      - db
+      - redis
+      - elasticsearch
+      - rabbitmq
+
+volumes:
+  db-data:
+
+networks:
+  musicfeed-network:
